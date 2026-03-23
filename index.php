@@ -1,133 +1,265 @@
 <?php
-
-/**
- * Inclui o arquivo de conexão com o banco de dados.
- *
- * __DIR__ retorna o diretório atual do arquivo,
- * o que evita problemas de caminho relativo.
- */
 require __DIR__ . "/connect.php";
 
 /**
- * Obtém a instância da conexão com o banco.
- * Esse método foi definido na classe Connect.
+ * Obtém a instância única da conexão (Singleton).
  */
 $pdo = Connect::getInstance();
 
 /**
- * Executa uma consulta SQL para buscar todos os usuários
- * da tabela "users", ordenando pelo campo "id" em ordem crescente.
- *
- * query() é usado quando não há parâmetros dinâmicos.
+ * Executa a consulta para buscar todos os usuários
+ * ordenados pelo ID (do menor para o maior).
  */
 $stmt = $pdo->query("SELECT * FROM users ORDER BY id ASC");
 
 /**
- * fetchAll() busca todos os registros retornados pela consulta
- * e os armazena em um array.
+ * Armazena todos os registros em um array associativo.
  */
 $users = $stmt->fetchAll();
-
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuração de caracteres -->
     <meta charset="UTF-8">
-    <title>CRUD PHP</title>
+
+    <!-- Responsividade para dispositivos móveis -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CRUD de Alunos</title>
+
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /**
+         * Container centralizado
+         */
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /**
+         * Títulos centralizados
+         */
+        h1, h2 {
+            text-align: center;
+        }
+
+        /**
+         * Estilização do formulário
+         */
+        form {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        /**
+         * Labels em destaque
+         */
+        label {
+            font-weight: bold;
+        }
+
+        /**
+         * Inputs com espaçamento e borda suave
+         */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        /**
+         * Botão principal
+         */
+        button {
+            background: #22c55e;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /**
+         * Efeito ao passar o mouse no botão
+         */
+        button:hover {
+            background: #16a34a;
+        }
+
+        /**
+         * Estilização da tabela
+         */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e293b;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /**
+         * Cabeçalho e células
+         */
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        /**
+         * Cor do cabeçalho
+         */
+        th {
+            background: #334155;
+        }
+
+        /**
+         * Linhas alternadas (efeito zebra)
+         */
+        tr:nth-child(even) {
+            background: #0f172a;
+        }
+
+        /**
+         * Links
+         */
+        a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        /**
+         * Efeito hover nos links
+         */
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /**
+         * Espaçamento entre ações
+         */
+        .actions a {
+            margin: 0 5px;
+        }
+    </style>
 </head>
 
 <body>
+<div class="max-w-3xl mx-auto bg-slate-800 p-6 rounded-xl shadow-lg">
+    
+    <h1 class="text-2xl font-bold text-center mb-6">Cadastro de Alunos</h1>
 
-    <h1>Cadastro de Alunos</h1>
+    <form action="store.php" method="post" class="space-y-4">
 
-    <!--
-        Formulário responsável por enviar os dados
-        para o arquivo store.php, que fará o cadastro no banco.
-        
-        method="post" é usado para envio de dados de formulário
-        de forma mais apropriada e segura do que GET.
-    -->
-    <form action="store.php" method="post">
-        <p>
-            <label>Nome:</label><br>
-            <input type="text" name="nomecompleto" required>
-        </p>
+        <div>
+            <label class="block mb-1 font-semibold">Nome</label>
+            <input type="text" name="name"
+                class="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                required>
+        </div>
 
-        <p>
-            <label>E-mail:</label><br>
-            <input type="email" name="email" required>
-        </p>
+        <div>
+            <label class="block mb-1 font-semibold">Documento</label>
+            <input type="text" name="document"
+                class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+        </div>
 
-        <p>
-            <label>Curso:</label><br>
-            <input type="text" name="document" required>
-        </p>
+        <div>
+            <label class="block mb-1 font-semibold">Curso</label>
+            <input type="text" name="curso"
+                class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+        </div>
 
-        <button type="submit">Cadastrar</button>
+        <button
+            class="w-full bg-green-500 hover:bg-green-600 transition p-2 rounded font-bold">
+            Cadastrar
+        </button>
+
     </form>
+</div>
 
-    <hr>
-
+    <!-- Subtítulo -->
     <h2>Lista de alunos</h2>
 
-    <!--
-        Tabela que exibe os alunos cadastrados no banco de dados.
-        O atributo cellpadding adiciona espaçamento interno nas células.
-    -->
-    <table cellpadding="10">
+    <!-- Tabela de usuários -->
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
-                <th>E-mail</th>
+                <th>Documento</th>
                 <th>Curso</th>
-                <th>Cadastrado em</th>
+                <th>Data</th>
                 <th>Ações</th>
             </tr>
         </thead>
+
         <tbody>
-            <!--
-                foreach percorre todos os usuários retornados do banco.
-                A cada repetição, a variável $user representa um aluno.
-            -->
+            <!-- Percorre todos os usuários -->
             <?php foreach ($users as $user) : ?>
                 <tr>
-                    <td><?= $user["id"] ?></td>
-                    <td><?= $user["name"] ?></td>
-                    <td><?= $user["email"] ?></td>
-                    <td><?= $user["document"] ?></td>
-                    <td><?= date("d/m/Y H:i", strtotime($user["created_at"])) ?></td>
-                    <td>
-                        <!--
-                            Link para editar o aluno.
-                            O ID é enviado pela URL para que o arquivo edit.php
-                            saiba qual registro deve ser alterado.
-                        -->
-                        <a href="edit.php?id=<?= $user["id"] ?>">Editar</a> |
 
-                        <!--
-                            Link para excluir o aluno.
-                            O onclick chama uma confirmação em JavaScript
-                            antes de seguir para a exclusão.
-                        -->
-                        <a href="delete.php?id=<?= $user["id"] ?>" onclick="return confirm('Tem certeza que deseja excluir este aluno?')">Excluir</a>
+                    <!-- ID -->
+                    <td><?= htmlspecialchars($user["id"]) ?></td>
+
+                    <!-- Nome protegido contra XSS -->
+                    <td><?= htmlspecialchars($user["name"]) ?></td>
+
+                    <!-- Documento -->
+                    <td><?= htmlspecialchars($user["document"]) ?></td>
+
+                    <!-- Curso (se não existir, mostra '-') -->
+                    <td><?= htmlspecialchars($user["curso"] ?? '-') ?></td>
+
+                    <!-- Data formatada -->
+                    <td><?= date("d/m/Y H:i", strtotime($user["created_at"])) ?></td>
+
+                    <!-- Ações -->
+                    <td class="actions">
+
+                        <!-- Editar -->
+                        <a href="edit.php?id=<?= $user["id"] ?>">Editar</a>
+
+                        <!-- Excluir com confirmação -->
+                        <a href="delete.php?id=<?= $user["id"] ?>"
+                           onclick="return confirm('Excluir este aluno?')">
+                           Excluir
+                        </a>
+
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
+
         <tfoot>
             <tr>
-                <!--
-                    colspan="6" faz a célula ocupar as 6 colunas da tabela.
-                    count($users) conta quantos alunos existem no array.
-                -->
-                <td colspan="6">Total de alunos: <?= count($users) ?></td>
+                <!-- Total de registros -->
+                <td colspan="6">
+                    Total: <?= count($users) ?> alunos
+                </td>
             </tr>
         </tfoot>
     </table>
 
-</body>
+</div>
 
+</body>
 </html>
