@@ -6,28 +6,41 @@
 require __DIR__ . "/connect.php";
 
 /**
- * Captura e valida o ID enviado pelo formulário via POST.
- * O ID deve ser um número inteiro válido.
+ * Função auxiliar para limpar dados de entrada.
+ * Remove espaços desnecessários.
+ */
+function cleanInput($data)
+{
+    return trim($data ?? "");
+}
+
+/**
+ * Captura e valida o ID enviado via POST.
+ * FILTER_VALIDATE_INT garante que seja um número inteiro válido.
  */
 $id = filter_input(INPUT_POST, "id", FILTER_VALIDATE_INT);
 
 /**
- * Captura os demais dados enviados pelo formulário.
- *
- * trim() remove espaços em branco no início e no fim.
- * O operador ?? "" garante valor padrão caso o índice não exista.
+ * Captura e limpa os dados do formulário.
  */
-$name = trim($_POST["name"] ?? "");
-$email = trim($_POST["email"] ?? "");
-$document = trim($_POST["document"] ?? "");
+$name = cleanInput($_POST["name"] ?? null);
+$document = cleanInput($_POST["document"] ?? null);
+$curso = cleanInput($_POST["curso"] ?? null);
 
 /**
- * Validação básica:
- * - o ID precisa ser válido
- * - nome, e-mail e curso não podem estar vazios
+ * Validação dos dados:
+ * - ID deve ser válido
+ * - Campos não podem estar vazios
  */
-if (!$id || $name === "" || $email === "" || $document === "") {
+if (!$id || $name === "" || $document === "" || $curso === "") {
     die("Dados inválidos.");
+}
+
+/**
+ * Validação adicional (boas práticas)
+ */
+if (strlen($name) < 3) {
+    die("Nome deve ter pelo menos 3 caracteres.");
 }
 
 /**
@@ -37,29 +50,29 @@ $pdo = Connect::getInstance();
 
 /**
  * Prepara a instrução SQL de atualização.
- *
- * O registro será atualizado com base no ID recebido.
+ * Apenas os campos corretos são atualizados.
  */
 $stmt = $pdo->prepare("
     UPDATE users
-    SET name = :name, email = :email, document = :document
+    SET 
+        name = :name,
+        document = :document,
+        curso = :curso
     WHERE id = :id
 ");
 
 /**
- * Executa a instrução preparada, enviando os valores
- * para os respectivos placeholders.
+ * Executa a query com os dados tratados.
  */
 $stmt->execute([
     ":id" => $id,
     ":name" => $name,
-    ":email" => $email,
-    ":document" => $document
+    ":document" => $document,
+    ":curso" => $curso
 ]);
 
 /**
- * Redireciona o usuário para a página principal
- * após a atualização.
+ * Redireciona para a página principal após atualização.
  */
 header("Location: index.php");
 
