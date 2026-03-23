@@ -57,46 +57,96 @@ if (!$user) {
 <html lang="pt-br">
 
 <head>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <meta charset="UTF-8">
-    <title>Editar aluno</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Editar Aluno</title>
 </head>
 
-<body>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center">
 
-    <h1>Editar aluno</h1>
+    <!-- Container principal centralizado -->
+    <div class="w-full max-w-xl bg-slate-800 p-6 rounded-xl shadow-lg">
 
-    <!--
-        Formulário responsável por enviar os dados atualizados
-        para o arquivo update.php.
-    -->
-    <form action="update.php" method="post">
+        <!-- Título -->
+        <h1 class="text-2xl font-bold text-center mb-6">
+            ✏️ Editar Aluno
+        </h1>
+
         <!--
-            Campo oculto que envia o ID do aluno.
-            Ele é necessário para que o update.php saiba
-            qual registro deve ser atualizado.
+            Formulário responsável por atualizar os dados do aluno
         -->
-        <input type="hidden" name="id" value="<?= $user["id"] ?>">
+        <form action="update.php" method="post" class="space-y-4">
 
-        <p>
-            <label>Nome:</label><br>
-            <input type="text" name="name" value="<?= htmlspecialchars($user["name"]) ?>" required>
-        </p>
+            <!-- ID oculto -->
+            <input type="hidden" name="id" value="<?= $user["id"] ?>">
 
-        <p>
-            <label>Documento:</label><br>
-            <input type="text" name="document" value="<?= htmlspecialchars($user["document"]) ?>" required>
-        </p>
+            <!-- Nome -->
+            <div>
+                <label for="name" class="block mb-1 font-semibold">Nome</label>
+                <input 
+                    type="text" 
+                    id="name"
+                    name="name"
+                    value="<?= htmlspecialchars($user["name"]) ?>"
+                    required
+                    class="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+            </div>
 
-        <p>
-            <label>Curso:</label><br>
-            <input type="text" name="curso" value="<?= htmlspecialchars($user["curso"]) ?>" required>
-        </p>
+            <!-- Documento -->
+            <div>
+                <label for="document" class="block mb-1 font-semibold">Documento</label>
+                <input 
+                    type="text" 
+                    id="document"
+                    name="document"
+                    value="<?= htmlspecialchars($user["document"]) ?>"
+                    required
+                    class="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+            </div>
 
-        <button type="submit">Atualizar</button>
-    </form>
+            <!-- Curso -->
+            <div>
+                <label for="curso" class="block mb-1 font-semibold">Curso</label>
+                <input 
+                    type="text" 
+                    id="curso"
+                    name="curso"
+                    value="<?= htmlspecialchars($user["curso"]) ?>"
+                    required
+                    class="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+            </div>
 
-    <p><a href="index.php">Voltar</a></p>
+            <!-- Botões -->
+            <div class="flex gap-2">
+
+                <!-- Atualizar -->
+                <button 
+                    type="submit"
+                    class="flex-1 bg-green-500 hover:bg-green-600 transition p-2 rounded font-bold"
+                >
+                    Atualizar
+                </button>
+
+                <!-- Voltar -->
+                <a 
+                    href="index.php"
+                    class="flex-1 text-center bg-slate-600 hover:bg-slate-700 transition p-2 rounded font-bold"
+                >
+                    Voltar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </body>
-
 </html>
