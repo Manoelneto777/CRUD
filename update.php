@@ -74,7 +74,7 @@ $stmt->execute([
 /**
  * Redireciona para a página principal após atualização.
  */
-header("Location: index.php");
+header("Location: index.php?updated=1");
 
 /**
  * Encerra a execução do script.
