@@ -12,7 +12,7 @@ class Connect
      * não podem ser alterados em tempo de execução.
      */
     private const HOST = "localhost";
-    private const DBNAME = "aula01";
+    private const DBNAME = "crud";
     private const USER = "root";
     private const PASS = "";
 
