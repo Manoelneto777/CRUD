@@ -83,13 +83,13 @@ if (!$user) {
         </p>
 
         <p>
-            <label>E-mail:</label><br>
-            <input type="email" name="email" value="<?= htmlspecialchars($user["email"]) ?>" required>
+            <label>Documento:</label><br>
+            <input type="text" name="document" value="<?= htmlspecialchars($user["document"]) ?>" required>
         </p>
 
         <p>
             <label>Curso:</label><br>
-            <input type="text" name="document" value="<?= htmlspecialchars($user["document"]) ?>" required>
+            <input type="text" name="curso" value="<?= htmlspecialchars($user["curso"]) ?>" required>
         </p>
 
         <button type="submit">Atualizar</button>
