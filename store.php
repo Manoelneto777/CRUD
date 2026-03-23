@@ -1,62 +1,63 @@
 <?php
 
 /**
- * Inclui o arquivo de conexão com o banco de dados.
+ * Inclui a conexão com o banco de dados.
  */
 require __DIR__ . "/connect.php";
 
 /**
- * Captura os dados enviados pelo formulário via método POST.
- *
- * O operador ?? "" garante que, se o índice não existir,
- * seja usado uma string vazia como valor padrão.
- *
- * trim() remove espaços em branco no início e no fim.
+ * Função auxiliar para limpar dados de entrada.
  */
-$name = trim($_POST["name"] ?? "");
-$email = trim($_POST["email"] ?? "");
-$document = trim($_POST["document"] ?? "");
+function cleanInput($data)
+{
+    return trim($data ?? "");
+}
 
 /**
- * Validação básica:
- * se qualquer campo estiver vazio, a execução é interrompida.
+ * Captura e limpa os dados do formulário.
  */
-if ($name === "" || $email === "" || $document === "") {
+$name = cleanInput($_POST["name"] ?? null);
+$document = cleanInput($_POST["document"] ?? null);
+$curso = cleanInput($_POST["curso"] ?? null);
+
+/**
+ * Validação básica dos campos obrigatórios.
+ */
+if ($name === "" || $document === "" || $curso === "") {
     die("Preencha todos os campos.");
 }
 
 /**
- * Obtém a conexão com o banco.
+ * Validação adicional (boas práticas).
+ */
+if (strlen($name) < 3) {
+    die("Nome deve ter pelo menos 3 caracteres.");
+}
+
+/**
+ * Conexão com o banco.
  */
 $pdo = Connect::getInstance();
 
 /**
- * Prepara a instrução SQL de inserção.
- *
- * prepare() é a forma recomendada quando existem dados dinâmicos,
- * pois ajuda a evitar SQL Injection.
+ * Prepara a inserção (seguro contra SQL Injection).
  */
 $stmt = $pdo->prepare("
-    INSERT INTO users (name, email, document)
-    VALUES (:name, :email, :document)
+    INSERT INTO users (name, document, curso)
+    VALUES (:name, :document, :curso)
 ");
 
 /**
- * Executa a instrução preparada, enviando os valores
- * para os placeholders nomeados.
+ * Executa a query com os dados.
  */
 $stmt->execute([
     ":name" => $name,
-    ":email" => $email,
-    ":document" => $document
+    ":document" => $document,
+    ":curso" => $curso
 ]);
 
 /**
- * Redireciona o usuário para a página principal após o cadastro.
+ * Redireciona para a página principal.
  */
 header("Location: index.php");
-
-/**
- * Encerra a execução do script após o redirecionamento.
- */
 exit;
